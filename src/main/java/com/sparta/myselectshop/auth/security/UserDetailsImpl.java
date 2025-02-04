@@ -10,6 +10,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public record UserDetailsImpl(User user) implements UserDetails {
 
+  public Boolean isAdmin() {
+    return user.getRole() == Role.ADMIN;
+  }
+
   @Override
   public String getPassword() {
     return user.getPassword();
@@ -30,25 +34,5 @@ public record UserDetailsImpl(User user) implements UserDetails {
     authorities.add(simpleGrantedAuthority);
 
     return authorities;
-  }
-
-  @Override
-  public boolean isAccountNonExpired() {
-    return true;
-  }
-
-  @Override
-  public boolean isAccountNonLocked() {
-    return true;
-  }
-
-  @Override
-  public boolean isCredentialsNonExpired() {
-    return true;
-  }
-
-  @Override
-  public boolean isEnabled() {
-    return true;
   }
 }

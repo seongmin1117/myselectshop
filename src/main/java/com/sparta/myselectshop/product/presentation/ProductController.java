@@ -1,5 +1,6 @@
 package com.sparta.myselectshop.product.presentation;
 
+import com.sparta.myselectshop.auth.security.UserDetailsImpl;
 import com.sparta.myselectshop.product.application.ProductService;
 import com.sparta.myselectshop.product.application.dto.MyPriceUpdateRequest;
 import com.sparta.myselectshop.product.application.dto.ProductCreateRequest;
@@ -9,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -21,23 +23,33 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/products")
 public class ProductController {
-    private final ProductService productService;
+  private final ProductService productService;
 
-    @PostMapping()
-    public ResponseEntity<ProductResponse> createProduct(@Valid @RequestBody ProductCreateRequest request) {
-        ProductResponse response = productService.create(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
+  @PostMapping()
+  public ResponseEntity<ProductResponse> createProduct(
+      @Valid @RequestBody ProductCreateRequest request,
+      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    ProductResponse response = productService.create(request, userDetails.user());
+    return ResponseEntity.status(HttpStatus.CREATED).body(response);
+  }
 
-    @GetMapping()
-    public ResponseEntity<ProductListResponse> getProducts() {
-        ProductListResponse response = productService.getProducts();
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
+  @GetMapping("/admin")
+  public ResponseEntity<ProductListResponse> getProducts() {
+    ProductListResponse response = productService.getProducts();
+    return ResponseEntity.status(HttpStatus.OK).body(response);
+  }
 
-    @PutMapping()
-    public ResponseEntity<Void> updateMyPrice(@Valid @RequestParam Long id, @RequestBody MyPriceUpdateRequest request) {
-        productService.updateMyPrice(id,request);
-        return ResponseEntity.ok().build();
-    }
+  @GetMapping()
+  public ResponseEntity<ProductListResponse> getProductsByUser(
+      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    ProductListResponse response = productService.getProductsByUser(userDetails.user());
+    return ResponseEntity.status(HttpStatus.OK).body(response);
+  }
+
+  @PutMapping()
+  public ResponseEntity<Void> updateMyPrice(
+      @Valid @RequestParam Long id, @RequestBody MyPriceUpdateRequest request) {
+    productService.updateMyPrice(id, request);
+    return ResponseEntity.ok().build();
+  }
 }
