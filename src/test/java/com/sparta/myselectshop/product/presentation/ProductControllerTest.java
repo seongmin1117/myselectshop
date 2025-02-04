@@ -41,11 +41,9 @@ class ProductControllerTest {
         .perform(
             post("/api/v1/products")
                 .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(request))
-        )
+                .content(objectMapper.writeValueAsString(request)))
         .andDo(print())
         .andExpect(status().isCreated());
-
   }
 
   @DisplayName("관심상품 리스트를 조회할 수 있다.")
@@ -58,13 +56,9 @@ class ProductControllerTest {
 
     // when & then
     mockMvc
-        .perform(
-            get("/api/v1/products")
-                .contentType(MediaType.APPLICATION_JSON)
-        )
+        .perform(get("/api/v1/products").contentType(MediaType.APPLICATION_JSON))
         .andDo(print())
         .andExpect(status().isOk());
-
   }
 
   @DisplayName("희망최저가를 수정할 수 있다.")
@@ -75,14 +69,14 @@ class ProductControllerTest {
     // when & then
     mockMvc
         .perform(
-        put("/api/v1/products")
-            .contentType(MediaType.APPLICATION_JSON)
-            .param("id","1")
-            .content(objectMapper.writeValueAsString(request))
-        )
+            put("/api/v1/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("id", "1")
+                .content(objectMapper.writeValueAsString(request)))
         .andDo(print())
         .andExpect(status().isOk());
   }
+
   private ProductCreateRequest createProduct(
       String title, String image, String link, Integer lprice) {
     return new ProductCreateRequest(title, image, link, lprice);

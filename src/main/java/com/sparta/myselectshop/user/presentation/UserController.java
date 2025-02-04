@@ -4,7 +4,6 @@ import com.sparta.myselectshop.auth.security.UserDetailsImpl;
 import com.sparta.myselectshop.user.application.UserService;
 import com.sparta.myselectshop.user.application.dto.SignupRequest;
 import com.sparta.myselectshop.user.application.dto.UserInfo;
-import com.sparta.myselectshop.user.domain.Role;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -56,10 +55,6 @@ public class UserController {
   @GetMapping("/user-info")
   @ResponseBody
   public UserInfo getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-    String username = userDetails.user().getUsername();
-    Role role = userDetails.user().getRole();
-    boolean isAdmin = (role == Role.ADMIN);
-
-    return new UserInfo(username, isAdmin);
+    return UserInfo.of(userDetails);
   }
 }

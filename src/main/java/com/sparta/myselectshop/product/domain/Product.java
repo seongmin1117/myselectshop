@@ -2,6 +2,7 @@ package com.sparta.myselectshop.product.domain;
 
 import com.sparta.myselectshop.common.BaseTimeEntity;
 import com.sparta.myselectshop.product.domain.vo.MyPrice;
+import com.sparta.myselectshop.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -18,6 +19,10 @@ public class Product extends BaseTimeEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "userId", nullable = false)
+  private User user;
+
   @Column(nullable = false)
   private String title;
 
@@ -33,7 +38,9 @@ public class Product extends BaseTimeEntity {
   @Embedded private MyPrice myPrice;
 
   @Builder
-  private Product(String title, String image, String link, Integer lprice, Integer myPrice) {
+  private Product(
+      User user, String title, String image, String link, Integer lprice, Integer myPrice) {
+    this.user = user;
     this.title = title;
     this.image = image;
     this.link = link;
