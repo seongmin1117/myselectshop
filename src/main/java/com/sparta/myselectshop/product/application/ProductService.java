@@ -30,6 +30,14 @@ public class ProductService {
     return ProductListResponse.toDtoList(products);
   }
 
+  public void updateBySearch(Long id, Integer lprice) {
+    Product product =
+        productRepository
+            .findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("상품을 찾을 수 없습니다."));
+    product.updateLprice(lprice);
+  }
+
   public void updateMyPrice(Long id, MyPriceUpdateRequest request) {
     Product product =
         productRepository

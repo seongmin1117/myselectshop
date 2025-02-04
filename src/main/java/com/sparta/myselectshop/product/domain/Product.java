@@ -30,8 +30,7 @@ public class Product extends BaseTimeEntity {
   @Column(nullable = false)
   private Integer lprice;
 
-  @Embedded
-  private MyPrice myPrice;
+  @Embedded private MyPrice myPrice;
 
   @Builder
   private Product(String title, String image, String link, Integer lprice, Integer myPrice) {
@@ -40,6 +39,10 @@ public class Product extends BaseTimeEntity {
     this.link = link;
     this.lprice = lprice;
     this.myPrice = new MyPrice(myPrice);
+  }
+
+  public void updateLprice(Integer lprice) {
+    this.lprice = lprice;
   }
 
   public void updateMyPrice(Integer value) {
