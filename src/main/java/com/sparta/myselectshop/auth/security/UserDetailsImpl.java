@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public record UserDetailsImpl(User user) implements UserDetails {
 
-  public Boolean isAdmin() {
+  public boolean isAdmin() {
     return user.getRole() == Role.ADMIN;
   }
 
