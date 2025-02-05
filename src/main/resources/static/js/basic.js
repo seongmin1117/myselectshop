@@ -198,7 +198,6 @@ function showProduct() {
       }
     },
     callback: function (response, pagination) {
-      console.log(response)
       $('#product-container').empty();
       for (let i = 0; i < response.length; i++) {
         let product = response[i];
