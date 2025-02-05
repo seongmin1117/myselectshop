@@ -31,9 +31,10 @@ class ProductServiceTest {
   void createProduct() {
     // given
     ProductCreateRequest product = createProduct("title1", "image1", "link1", 10000);
-    User user = new User("username", "password", "email", Role.USER);
+    User user = new User("productServiceTestUser", "password", "email@.com", Role.USER);
+    User save = userRepository.save(user);
     // when
-    ProductResponse response = productService.create(product, user);
+    ProductResponse response = productService.create(product, save);
     // then
     assertThat(response)
         .extracting("title", "image", "link", "lprice", "myPrice")
@@ -71,9 +72,10 @@ class ProductServiceTest {
   @Test
   void updateMyPrice() {
     // given
-    User user = new User("username", "password", "email", Role.USER);
+    User user = new User("productServiceTestUser", "password", "email@.com", Role.USER);
+    User save = userRepository.save(user);
     ProductCreateRequest product = createProduct("title1", "image1", "link1", 10000);
-    Product original = productRepository.save(ProductCreateRequest.toEntity(product, user));
+    Product original = productRepository.save(ProductCreateRequest.toEntity(product, save));
     MyPriceUpdateRequest request = new MyPriceUpdateRequest(2000);
     // when
     productService.updateMyPrice(original.getId(), request);
@@ -88,9 +90,10 @@ class ProductServiceTest {
   void validateMyPrice() {
     // given
     int minMyPrice = MyPrice.MIN_MY_PRICE;
-    User user = new User("username", "password", "email", Role.USER);
+    User user = new User("productServiceTestUser", "password", "email@.com", Role.USER);
+    User save = userRepository.save(user);
     ProductCreateRequest product = createProduct("title1", "image1", "link1", 10000);
-    Product product1 = productRepository.save(ProductCreateRequest.toEntity(product, user));
+    Product product1 = productRepository.save(ProductCreateRequest.toEntity(product, save));
     MyPriceUpdateRequest request = new MyPriceUpdateRequest(minMyPrice - 1);
     // when
     assertThatThrownBy(() -> productService.updateMyPrice(product1.getId(), request))

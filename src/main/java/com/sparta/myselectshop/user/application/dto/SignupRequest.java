@@ -7,5 +7,5 @@ public record SignupRequest(
     @NotBlank String username,
     @NotBlank String password,
     @Email @NotBlank String email,
-    Boolean isAdmin,
+    boolean isAdmin,
     String adminToken) {}
