@@ -11,6 +11,7 @@ import com.sparta.myselectshop.product.domain.vo.MyPrice;
 import com.sparta.myselectshop.product.infrastructure.ProductRepository;
 import com.sparta.myselectshop.user.domain.Role;
 import com.sparta.myselectshop.user.domain.User;
+import com.sparta.myselectshop.user.infrastructure.UserRepository;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 class ProductServiceTest {
   @Autowired ProductService productService;
   @Autowired ProductRepository productRepository;
+  @Autowired UserRepository userRepository;
 
   @DisplayName("관심상품을 생성할 수 있다.")
   @Test
@@ -38,20 +40,30 @@ class ProductServiceTest {
         .contains("title1", "image1", "link1", 10000, 0);
   }
 
-  @DisplayName("관심상품을 조회할 수 있다.")
+  @DisplayName("유저별 관심상품을 조회할 수 있다.")
   @Test
-  void getProducts() {
+  void getProductsByUser() {
     // given
-    User user = new User("username", "password", "email", Role.USER);
+    User user = new User("productServiceTestUser", "password", "email@.com", Role.USER);
+    User save = userRepository.save(user);
     ProductCreateRequest product1 = createProduct("title1", "image1", "link1", 10000);
     ProductCreateRequest product2 = createProduct("title2", "image2", "link2", 20000);
     ProductCreateRequest product3 = createProduct("title3", "image3", "link3", 30000);
-    productRepository.save(ProductCreateRequest.toEntity(product1, user));
-    productRepository.save(ProductCreateRequest.toEntity(product2, user));
-    productRepository.save(ProductCreateRequest.toEntity(product3, user));
+    productRepository.save(ProductCreateRequest.toEntity(product1, save));
+    productRepository.save(ProductCreateRequest.toEntity(product2, save));
+    productRepository.save(ProductCreateRequest.toEntity(product3, save));
+    int page = 0;
+    int size = 10;
+    String sortBy = "lprice";
+    boolean isAsc = true;
+
     // when
-    ProductListResponse response = productService.getProducts();
+    ProductListResponse response =
+        productService.getProductsByUser(save, page, size, sortBy, isAsc);
     // then
+    for (ProductResponse product : response.products()) {
+      System.out.println("productId = " + product.productId());
+    }
     assertThat(response.products()).hasSize(3);
   }
 
