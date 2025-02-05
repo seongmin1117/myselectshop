@@ -40,7 +40,7 @@ public class ProductController {
       @RequestParam("size") int size,
       @RequestParam("sortBy") String sortBy,
       @RequestParam("isAsc") boolean isAsc) {
-    ProductListResponse response = productService.getProductsByAdmin(page, size, sortBy, isAsc);
+    ProductListResponse response = productService.getProductsByAdmin(page - 1, size, sortBy, isAsc);
     return ResponseEntity.status(HttpStatus.OK).body(response);
   }
 
@@ -52,7 +52,7 @@ public class ProductController {
       @RequestParam("isAsc") boolean isAsc,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
     ProductListResponse response =
-        productService.getProductsByUser(userDetails.user(), page, size, sortBy, isAsc);
+        productService.getProductsByUser(userDetails.user(), page - 1, size, sortBy, isAsc);
     return ResponseEntity.status(HttpStatus.OK).body(response);
   }
 
