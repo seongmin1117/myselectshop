@@ -10,6 +10,11 @@ import com.sparta.myselectshop.user.domain.User;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,14 +31,22 @@ public class ProductService {
   }
 
   @Transactional(readOnly = true)
-  public ProductListResponse getProducts() {
-    List<Product> products = productRepository.findAll();
+  public List<Product> findAll() {
+    return productRepository.findAll();
+  }
+
+  @Transactional(readOnly = true)
+  public ProductListResponse getProductsByAdmin(int page, int size, String sortBy, boolean isAsc) {
+    Pageable pageable = getPageable(page, size, sortBy, isAsc);
+    Page<Product> products = productRepository.findAll(pageable);
     return ProductListResponse.toDtoList(products);
   }
 
   @Transactional(readOnly = true)
-  public ProductListResponse getProductsByUser(User user) {
-    List<Product> products = productRepository.findAllByUser(user);
+  public ProductListResponse getProductsByUser(
+      User user, int page, int size, String sortBy, boolean isAsc) {
+    Pageable pageable = getPageable(page, size, sortBy, isAsc);
+    Page<Product> products = productRepository.findAllByUser(user, pageable);
     return ProductListResponse.toDtoList(products);
   }
 
@@ -51,5 +64,11 @@ public class ProductService {
             .findById(id)
             .orElseThrow(() -> new EntityNotFoundException("상품을 찾을 수 없습니다."));
     product.updateMyPrice(request.myPrice());
+  }
+
+  private Pageable getPageable(int page, int size, String sortBy, boolean isAsc) {
+    Direction direction = isAsc ? Direction.ASC : Direction.DESC;
+    Sort sort = Sort.by(direction, sortBy);
+    return PageRequest.of(page, size, sort);
   }
 }

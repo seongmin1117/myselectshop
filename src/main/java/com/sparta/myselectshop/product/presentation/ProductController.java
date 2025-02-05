@@ -34,15 +34,24 @@ public class ProductController {
   }
 
   @GetMapping("/admin")
-  public ResponseEntity<ProductListResponse> getProducts() {
-    ProductListResponse response = productService.getProducts();
+  public ResponseEntity<ProductListResponse> getProductsByAdmin(
+      @RequestParam("page") int page,
+      @RequestParam("size") int size,
+      @RequestParam("sortBy") String sortBy,
+      @RequestParam("isAsc") boolean isAsc) {
+    ProductListResponse response = productService.getProductsByAdmin(page, size, sortBy, isAsc);
     return ResponseEntity.status(HttpStatus.OK).body(response);
   }
 
   @GetMapping()
   public ResponseEntity<ProductListResponse> getProductsByUser(
+      @RequestParam("page") int page,
+      @RequestParam("size") int size,
+      @RequestParam("sortBy") String sortBy,
+      @RequestParam("isAsc") boolean isAsc,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
-    ProductListResponse response = productService.getProductsByUser(userDetails.user());
+    ProductListResponse response =
+        productService.getProductsByUser(userDetails.user(), page, size, sortBy, isAsc);
     return ResponseEntity.status(HttpStatus.OK).body(response);
   }
 

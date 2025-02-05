@@ -1,11 +1,11 @@
 package com.sparta.myselectshop.product.application.dto;
 
 import com.sparta.myselectshop.product.domain.Product;
-import java.util.List;
+import org.springframework.data.domain.Page;
 
-public record ProductListResponse(List<ProductResponse> products) {
+public record ProductListResponse(Page<ProductResponse> products) {
 
-  public static ProductListResponse toDtoList(List<Product> products) {
-    return new ProductListResponse(products.stream().map(ProductResponse::toDto).toList());
+  public static ProductListResponse toDtoList(Page<Product> products) {
+    return new ProductListResponse(products.map(ProductResponse::toDto));
   }
 }
